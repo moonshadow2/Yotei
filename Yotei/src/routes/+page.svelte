@@ -13,12 +13,6 @@
     "Goals", "Boost", "Prime", "Swift"
   ];
 
-  const colors = [
-    '#1a4a2e', '#0d3b4f', '#2d1b4e', '#4a1a1a',
-    '#1a3a4a', '#2d4a1a', '#4a3a1a', '#1a2d4a',
-    '#3a1a4a', '#1a4a3a', '#4a2d1a', '#1a1a4a'
-  ];
-
   const BLOCK_WIDTH = 60;
   const BLOCK_HEIGHT = 120;
   const GAP = 10;
@@ -44,7 +38,6 @@
       y: Math.random() * canvas.height,
       speed: 0.4 + Math.random() * 0.5,
       text: tasks[Math.floor(Math.random() * tasks.length)],
-      color: colors[Math.floor(Math.random() * colors.length)],
       width: BLOCK_WIDTH,
       height: 80 + Math.random() * 200,
     }));
@@ -53,11 +46,10 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       blocks.forEach(block => {
-        // Fade out as block goes down the screen
         const fadeStart = canvas.height * 0.25;
         const opacity = block.y < fadeStart
           ? 1
-          : 1 - 1.3*((block.y - fadeStart) / (canvas.height - fadeStart));
+          : 1 - 1.3 * ((block.y - fadeStart) / (canvas.height - fadeStart));
 
         ctx.save();
         ctx.globalAlpha = Math.max(0, opacity);
@@ -75,10 +67,14 @@
         ctx.quadraticCurveTo(block.x, block.y, block.x + radius, block.y);
         ctx.closePath();
 
-        ctx.fillStyle = block.color;
+        // Gradient fill
+        const gradient = ctx.createLinearGradient(block.x, block.y, block.x, block.y + block.height);
+        gradient.addColorStop(0, '#003320');
+        gradient.addColorStop(1, '#003d4f');
+        ctx.fillStyle = gradient;
         ctx.fill();
 
-        // Clip text inside the block
+        // Clip text inside block
         ctx.clip();
 
         ctx.fillStyle = '#ffffff';
@@ -86,7 +82,7 @@
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Word wrap text inside block
+        // Word wrap
         const words = block.text.split(' ');
         const lineHeight = 14;
         let lines = [];
@@ -117,7 +113,6 @@
         if (block.y > canvas.height) {
           block.y = -block.height;
           block.text = tasks[Math.floor(Math.random() * tasks.length)];
-          block.color = colors[Math.floor(Math.random() * colors.length)];
           block.speed = 0.4 + Math.random() * 0.5;
           block.height = 80 + Math.random() * 200;
         }
