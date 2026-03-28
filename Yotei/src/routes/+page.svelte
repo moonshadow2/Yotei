@@ -1,8 +1,133 @@
 <script>
+  import { onMount } from 'svelte';
+
   function scrollToTop(e) {
     e.preventDefault();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  const tasks = [
+    "Focus", "Flow", "Plan", "Organize",
+    "Order", "Clear", "Fix", "Track",
+    "Boost", "Spark", "Clarity", "Track",
+    "Goals", "Boost", "Prime", "Swift"
+  ];
+
+  const colors = [
+    '#1a4a2e', '#0d3b4f', '#2d1b4e', '#4a1a1a',
+    '#1a3a4a', '#2d4a1a', '#4a3a1a', '#1a2d4a',
+    '#3a1a4a', '#1a4a3a', '#4a2d1a', '#1a1a4a'
+  ];
+
+  const BLOCK_WIDTH = 60;
+  const BLOCK_HEIGHT = 120;
+  const GAP = 10;
+  const COLUMN_WIDTH = BLOCK_WIDTH + GAP;
+
+  onMount(() => {
+    const canvas = document.getElementById('taskCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let columns = Math.floor(canvas.width / COLUMN_WIDTH);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / COLUMN_WIDTH);
+    });
+
+    const blocks = Array.from({ length: columns }, (_, i) => ({
+      x: i * COLUMN_WIDTH + GAP / 2,
+      y: Math.random() * canvas.height,
+      speed: 0.4 + Math.random() * 0.5,
+      text: tasks[Math.floor(Math.random() * tasks.length)],
+      color: colors[Math.floor(Math.random() * colors.length)],
+      width: BLOCK_WIDTH,
+      height: 80 + Math.random() * 200,
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      blocks.forEach(block => {
+        // Fade out as block goes down the screen
+        const fadeStart = canvas.height * 0.25;
+        const opacity = block.y < fadeStart
+          ? 1
+          : 1 - 1.3*((block.y - fadeStart) / (canvas.height - fadeStart));
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, opacity);
+
+        const radius = 10;
+        ctx.beginPath();
+        ctx.moveTo(block.x + radius, block.y);
+        ctx.lineTo(block.x + block.width - radius, block.y);
+        ctx.quadraticCurveTo(block.x + block.width, block.y, block.x + block.width, block.y + radius);
+        ctx.lineTo(block.x + block.width, block.y + block.height - radius);
+        ctx.quadraticCurveTo(block.x + block.width, block.y + block.height, block.x + block.width - radius, block.y + block.height);
+        ctx.lineTo(block.x + radius, block.y + block.height);
+        ctx.quadraticCurveTo(block.x, block.y + block.height, block.x, block.y + block.height - radius);
+        ctx.lineTo(block.x, block.y + radius);
+        ctx.quadraticCurveTo(block.x, block.y, block.x + radius, block.y);
+        ctx.closePath();
+
+        ctx.fillStyle = block.color;
+        ctx.fill();
+
+        // Clip text inside the block
+        ctx.clip();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Word wrap text inside block
+        const words = block.text.split(' ');
+        const lineHeight = 14;
+        let lines = [];
+        let currentLine = '';
+
+        words.forEach(word => {
+          const testLine = currentLine ? `${currentLine} ${word}` : word;
+          if (ctx.measureText(testLine).width > block.width - 10) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        });
+        lines.push(currentLine);
+
+        const totalTextHeight = lines.length * lineHeight;
+        const startY = block.y + block.height / 2 - totalTextHeight / 2 + lineHeight / 2;
+
+        lines.forEach((line, i) => {
+          ctx.fillText(line, block.x + block.width / 2, startY + i * lineHeight);
+        });
+
+        ctx.restore();
+
+        block.y += block.speed;
+
+        if (block.y > canvas.height) {
+          block.y = -block.height;
+          block.text = tasks[Math.floor(Math.random() * tasks.length)];
+          block.color = colors[Math.floor(Math.random() * colors.length)];
+          block.speed = 0.4 + Math.random() * 0.5;
+          block.height = 80 + Math.random() * 200;
+        }
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  });
 </script>
 
 <svelte:head>
@@ -32,14 +157,6 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(0, 255, 135, 0.2);
   }
-  
-  .navbar-toggler {
-  border-color: rgba(0, 255, 135, 0.5) !important;
-}
-
-.navbar-toggler-icon {
-  filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg);
-}
 
   .navbar-brand {
     font-weight: 700;
@@ -49,15 +166,23 @@
   }
 
   .nav-link {
-  color: #00ff87 !important;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-  transition: color 0.2s ease;
-}
+    color: #00ff87 !important;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: color 0.2s ease;
+  }
 
-.nav-link:hover {
-  color: #60efff !important;
-}
+  .nav-link:hover {
+    color: #60efff !important;
+  }
+
+  .navbar-toggler {
+    border-color: rgba(0, 255, 135, 0.5) !important;
+  }
+
+  .navbar-toggler-icon {
+    filter: invert(1) sepia(1) saturate(5) hue-rotate(90deg);
+  }
 
   .hero {
     height: 100vh;
@@ -66,6 +191,8 @@
     align-items: center;
     justify-content: center;
     background: radial-gradient(ellipse at top, #003320 0%, #0a0a0a 70%);
+    position: relative;
+    overflow: hidden;
   }
 
   .hero h1 {
@@ -76,6 +203,8 @@
     background: linear-gradient(90deg, #00ff87, #60efff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    position: relative;
+    z-index: 1;
   }
 
   .hero p {
@@ -83,6 +212,8 @@
     color: rgba(255, 255, 255, 0.5);
     margin-bottom: 3rem;
     letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
   }
 
   .login-btn {
@@ -96,6 +227,8 @@
     letter-spacing: 1px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     text-decoration: none;
+    position: relative;
+    z-index: 1;
   }
 
   .login-btn:hover {
@@ -198,6 +331,7 @@
 
 <!-- Hero Section -->
 <div class="hero">
+  <canvas id="taskCanvas" style="position: absolute; top: 0; left: 0; z-index: 0;"></canvas>
   <h1>Yotei</h1>
   <p>Manage your tasks. Own your day.</p>
   <a href="/login" class="login-btn">Login</a>
@@ -226,11 +360,10 @@
         <div class="feature-card">
           <h5>What you can do with Yotei</h5>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">✅ Create and organize tasks</li>
-            <li class="list-group-item">📅 Set deadlines and reminders</li>
-            <li class="list-group-item">📊 Track your progress</li>
-            <li class="list-group-item">🤝 Collaborate with others</li>
-            <li class="list-group-item">📱 Access from any device</li>
+            <li class="list-group-item">Create and organize tasks</li>
+            <li class="list-group-item">Set deadlines and reminders</li>
+            <li class="list-group-item">Track your progress</li>
+            <li class="list-group-item">Access from any device</li>
           </ul>
         </div>
       </div>
