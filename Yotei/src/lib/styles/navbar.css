@@ -1,0 +1,50 @@
+:root {
+  --sidebar-width: 220px;
+}
+
+aside {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background: #1e1e2e;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  transition: width 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+aside.collapsed {
+  width: 50px;
+  padding: 1rem 0.5rem;
+}
+
+.toggle {
+  background: none;
+  border: 1px solid #444;
+  color: white;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  align-self: flex-end;
+  margin-bottom: 1rem;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.navbar a {
+  color: #cdd6f4;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.navbar a:hover {
+  background: #313244;
+  color: white;
+}
