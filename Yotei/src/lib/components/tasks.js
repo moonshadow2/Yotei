@@ -1,11 +1,12 @@
 import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
 
 function createTask({ 
   title = '', 
   details = '', 
   priority = 'low', 
   dueDate = null, 
-  dueTime = null,  // add this
+  dueTime = null,
   completed = false 
 } = {}) {
   return {
@@ -14,13 +15,30 @@ function createTask({
     details,
     priority,
     dueDate,
-    dueTime,        // add this
+    dueTime,
     completed,
     createdAt: new Date(),
   };
 }
 
-export const tasks = writable([]);
+function loadTasks() {
+  if (!browser) return [];
+  try {
+    const stored = localStorage.getItem('tasks');
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveTasks(tasks) {
+  if (!browser) return;
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+export const tasks = writable(loadTasks());
+
+tasks.subscribe(saveTasks);
 
 export function addTask(taskData) {
   const task = createTask(taskData);
