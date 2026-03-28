@@ -1,106 +1,139 @@
-  .page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-  }
+/* login.css */
 
-  .card {
-    background: white;
-    border: 1.5px solid #ccc;
-    border-radius: 16px;
-    width: 420px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+/* Add at the very top of login.css */
+:global(html, body) {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
 
-  /* Top bar */
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #003320 0%, #0a0a0a 70%);
+}
 
-  .site-name {
-    font-size: 1.4rem;
-    font-weight: bold;
-  }
+.card {
+  background: #111111;
+  border: 1.5px solid rgba(0, 255, 135, 0.2);
+  border-radius: 16px;
+  width: 420px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 8px 30px rgba(0, 255, 135, 0.1);
+}
 
-  .logo-box {
-    width: 60px;
-    height: 60px;
-    border: 1.5px solid #ccc;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    color: #999;
-  }
+/* Top bar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .logo-box img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
+.site-name {
+  font-size: 2.1rem;
+  font-weight: bold;
+  font-family: sans-serif;
+  background: linear-gradient(135deg, #00ff87, #60efff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  /* Form */
-  .form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
+.logo-box {
+  width: 80px;
+  height: 80px;
+  border: 1.5px solid rgba(0, 255, 135, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #1a1a1a;
+}
 
-  input {
-    width: 100%;
-    padding: 16px;
-    border: 1.5px solid #ccc;
-    border-radius: 10px;
-    font-size: 1rem;
-    outline: none;
-    box-sizing: border-box;
-  }
+.logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: invert(1);
+}
 
-  input:focus {
-    border-color: #88b4e8;
-  }
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
 
-  button {
-    background-color: #88b4e8;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 48px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
+input {
+  width: 100%;
+  padding: 16px;
+  border: 1.5px solid rgba(0, 255, 135, 0.2);
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+  background: #1a1a1a;
+  color: white;
+}
 
-  button:hover {
-    background-color: #6a9fd4;
-  }
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
 
-  /* Dinos */
-  .dinos {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
-    padding-top: 8px;
-  }
+input:focus {
+  border-color: #00ff87;
+  box-shadow: 0 0 0 2px rgba(0, 255, 135, 0.15);
+}
 
-  .dino-placeholder {
-    width: 80px;
-    height: 70px;
-    border-radius: 8px;
-  }
+button {
+  background: linear-gradient(135deg, #00ff87, #60efff);
+  color: #0a0a0a;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 48px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: box-shadow 0.2s ease;
+}
 
-  .dino-placeholder.green {
-    border: 2px solid green;
-  }
+button:hover {
+  box-shadow: 0 8px 30px rgba(0, 255, 135, 0.6);
+}
 
-  .dino-placeholder.blue {
-    border: 2px solid #4a90d9;
-  }
+/* Dinos */
+.dinos {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding-top: 8px;
+}
+
+.dinos img {
+  width: 80px;
+  height: auto;
+  filter: drop-shadow(0 0 6px rgba(0, 255, 135, 0.4));
+}
+
+h1 {
+  font-size: 2.9rem;
+  font-weight: bold;
+  font-family: sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #00ff87, #60efff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent; /* ← add this as a fallback */
+  display: inline-block; /* ← add this, required for gradient text to work */
+}

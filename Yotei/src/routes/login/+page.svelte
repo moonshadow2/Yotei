@@ -1,9 +1,13 @@
-<!-- src/routes/+page.svelte -->
 <script>
-    import '$lib/styles/login.css';
-    // Don't have a database yet to store UIDs
-    let userID = $state('');
-    let password = $state('');
+  import '$lib/styles/login.css';
+  import '$lib/styles/app.css';
+  import logo from '$lib/assets/cursed.png';
+  import dino1 from '$lib/assets/dino1_colored.png';
+  import dino2 from '$lib/assets/dino2_colored.png';
+  import dino3 from '$lib/assets/dino3_colored.png';
+
+  let userID = $state('');
+  let password = $state('');
 
   function handleLogin() {
     console.log('Login attempted:', userID);
@@ -17,8 +21,7 @@
     <div class="topbar">
       <span class="site-name">Yotei</span>
       <div class="logo-box">
-        <!-- Replace with: <img src={logo} alt="Logo" /> -->
-        <span>Logo</span>
+        <img src={logo} alt="Logo" />
       </div>
     </div>
 
@@ -37,25 +40,17 @@
         placeholder="Password"
         bind:value={password}
       />
-      
-      <!-- Button click -->
-        <button onclick={handleLogin}>Sign In</button>
-        <button onclick={handleLogin}>Create Account</button>
 
+      <button onclick={handleLogin}>Sign In</button>
+      <button onclick={() => goto('/register')}>Create Account</button>
     </div>
 
-    <!-- Dinosaurs at the bottom 
+    <!-- Dinos -->
     <div class="dinos">
-      <div class="dino-placeholder green">
-        <img src={dino1} alt="dino" />
-      </div>
-      <div class="dino-placeholder big">
-        <img src={dino2} alt="dino" />
-      </div>
-      <div class="dino-placeholder blue">
-        <img src={dino3} alt="dino" />
-      </div>
-    </div> -->
+      <img src={dino1} alt="dinosaur" />
+      <img src={dino2} alt="dinosaur" />
+      <img src={dino3} alt="dinosaur" />
+    </div>
 
   </div>
 </div>
