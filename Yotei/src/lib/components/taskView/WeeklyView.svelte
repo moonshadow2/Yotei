@@ -29,20 +29,16 @@
     return d >= startOfWeek && d <= endOfWeek;
   }
 
-  function normaliseHour(timeStr) {
-    if (!timeStr) return null;
-    const [h] = timeStr.split(':');
-    return h.padStart(2, '0') + ':00';
+  function timeToRow(timeStr) {
+    if (!timeStr) return 2;
+    const [h] = timeStr.split(':').map(Number);
+    const clamped = Math.min(Math.max(h, 8), 20);
+    return clamped - 8 + 2;
   }
 
-  function tasksAtHour(dateObj, hour) {
+  function tasksForDay(dateObj) {
     const str = dateObj.toISOString().split('T')[0];
-    return $tasks.filter(t => {
-      if (t.dueDate !== str) return false;
-      const taskHour = normaliseHour(t.dueTime);
-      if (!taskHour) return hour === '08:00';
-      return taskHour === hour;
-    });
+    return $tasks.filter(t => t.dueDate === str && t.dueTime);
   }
 
   $: weekDays = getWeekDays();
@@ -58,29 +54,45 @@
   </div>
 {:else}
   <div class="weekly-grid">
-    <div class="week-header"></div>
+
+    <!-- Header row — all explicitly row 1 -->
+    <div class="corner" style="grid-column: 1; grid-row: 1;"></div>
     {#each weekDays as day, i}
-      <div class="week-header">
+      <div class="week-header" style="grid-column: {i + 2}; grid-row: 1;">
         {weekDayNames[i]}<br>
         <span class="week-date">{day.getDate()}</span>
       </div>
     {/each}
 
-    {#each hours as hour}
-      <div class="hour-label">{hour}</div>
-      {#each weekDays as day}
-        <div class="week-cell">
-          {#each tasksAtHour(day, hour) as t (t.id)}
-            <div
-              class="week-task {t.completed ? 'week-task-done' : ''}"
-              style="border-left: 3px solid {priorityColor[t.priority]};"
-            >
-              {t.title}
-            </div>
-          {/each}
+    <!-- Hour labels — every one explicitly pinned -->
+    {#each hours as hour, hi}
+      <div class="hour-label" style="grid-column: 1; grid-row: {hi + 2};">{hour}</div>
+    {/each}
+
+    <!-- Background cells — every one explicitly pinned -->
+    {#each hours as _, hi}
+      {#each weekDays as _, di}
+        <div class="week-cell" style="grid-column: {di + 2}; grid-row: {hi + 2};"></div>
+      {/each}
+    {/each}
+
+    <!-- Task blocks spanning rows -->
+    {#each weekDays as day, di}
+      {#each tasksForDay(day) as t (t.id)}
+        <div
+          class="week-task {t.completed ? 'week-task-done' : ''}"
+          style="
+            grid-column: {di + 2};
+            grid-row: {timeToRow(t.dueTime)} / {timeToRow(t.endTime) + 1};
+            border-left: 3px solid {priorityColor[t.priority]};
+          "
+        >
+          <span class="task-title">{t.title}</span>
+          <span class="task-time">{t.dueTime} – {t.endTime}</span>
         </div>
       {/each}
     {/each}
+
   </div>
 {/if}
 
@@ -97,11 +109,17 @@
   .weekly-grid {
     display: grid;
     grid-template-columns: 55px repeat(7, 1fr);
+    grid-auto-rows: 48px;
     gap: 1px;
     background-color: rgba(255,255,255,0.04);
     border-radius: 12px;
     overflow: hidden;
     font-size: 0.75rem;
+    position: relative;
+  }
+
+  .corner {
+    background-color: #111;
   }
 
   .week-header {
@@ -127,22 +145,33 @@
 
   .week-cell {
     background-color: #0f0f0f;
-    min-height: 48px;
-    padding: 0.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
   }
 
   .week-task {
-    background: linear-gradient(135deg, #003320, #003d4f);
+    background-color: #003d2a;
     border-radius: 6px;
-    padding: 0.25rem 0.4rem;
+    padding: 0.4rem 0.5rem;
     color: #ffffff;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2px;
+    overflow: hidden;
+    z-index: 2;
+    margin: 2px;
+  }
+
+  .task-title {
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.7rem;
+  }
+
+  .task-time {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.65rem;
   }
 
   .week-task-done {
