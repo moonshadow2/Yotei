@@ -6,30 +6,25 @@
   import dino1 from '$lib/assets/dino1_colored.png';
   import dino2 from '$lib/assets/dino2_colored.png';
   import dino3 from '$lib/assets/dino3_colored.png';
-  import { supabase } from '$lib/supabaseClient';
 
-  let email = $state('');
+  let username = $state('');
   let password = $state('');
-  let confirm = $state('');
+  let confirmPassword = $state('');
   let error = $state('');
-  let success = $state('');
   let loading = $state(false);
 
-  async function handleRegister() {
+  async function handleCreate() {
     error = '';
-    success = '';
-    if (!email.trim()) { error = 'Email is required.'; return; }
-    if (!password) { error = 'Password is required.'; return; }
-    if (password !== confirm) { error = 'Passwords do not match.'; return; }
+    if (!username.trim()) { error = 'Username is required.'; return; }
     if (password.length < 6) { error = 'Password must be at least 6 characters.'; return; }
+    if (password !== confirmPassword) { error = 'Passwords do not match.'; return; }
 
     loading = true;
-    const { error: err } = await supabase.auth.signUp({ email, password });
+    // Replace with your real account creation logic
+    await new Promise(r => setTimeout(r, 1000));
     loading = false;
 
-    if (err) { error = err.message; return; }
-    success = 'Account created! Redirecting to login...';
-    setTimeout(() => goto('/login'), 2000);
+    goto('/login');
   }
 </script>
 
@@ -44,20 +39,20 @@
       </div>
     </div>
 
-    <!-- Register form -->
+    <!-- Create Account form -->
     <div class="form">
-      <h1>Create Account</h1>
+      <h1>Register</h1>
 
       <input
-        type="email"
-        placeholder="Email"
-        bind:value={email}
-        autocomplete="email"
+        type="text"
+        placeholder="Username"
+        bind:value={username}
+        autocomplete="username"
       />
 
       <input
         type="password"
-        placeholder="Password"
+        placeholder="Password (min. 6 characters)"
         bind:value={password}
         autocomplete="new-password"
       />
@@ -65,25 +60,20 @@
       <input
         type="password"
         placeholder="Confirm Password"
-        bind:value={confirm}
+        bind:value={confirmPassword}
         autocomplete="new-password"
-        onkeydown={(e) => e.key === 'Enter' && handleRegister()}
       />
 
       {#if error}
         <p class="error-msg">⚠ {error}</p>
       {/if}
 
-      {#if success}
-        <p class="success-msg">✓ {success}</p>
-      {/if}
-
-      <button onclick={handleRegister} disabled={loading}>
-        {loading ? 'Creating account…' : 'Create Account'}
+      <button onclick={handleCreate} disabled={loading}>
+        {loading ? 'Creating…' : 'Create Account'}
       </button>
 
       <button class="secondary" onclick={() => goto('/login')}>
-        Already have an account? Sign In
+        Back to Login
       </button>
     </div>
 
@@ -110,18 +100,7 @@
     padding: 10px 14px;
   }
 
-  .success-msg {
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    font-size: 13px;
-    color: #00ff87;
-    background: rgba(0, 255, 135, 0.08);
-    border: 1px solid rgba(0, 255, 135, 0.2);
-    border-radius: 8px;
-    padding: 10px 14px;
-  }
-
+  /* Secondary button — outlined instead of filled */
   button.secondary {
     background: transparent;
     border: 1.5px solid rgba(0, 255, 135, 0.3);
