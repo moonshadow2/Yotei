@@ -1,4 +1,5 @@
 <script>
+  import { user } from '$lib/components/user.js';
   import { goto } from '$app/navigation';
   import '$lib/styles/login.css';
   import '$lib/styles/app.css';
@@ -10,9 +11,15 @@
   let userID = $state('');
   let password = $state('');
 
+
+
   function handleLogin() {
-    console.log('Login attempted:', userID);
+  if ($user && userID === $user.username && password === $user.password) {
+    goto('/dashboard');
+  } else {
+    error = 'Invalid username or password.';
   }
+}
 </script>
 
 <div class="page">
