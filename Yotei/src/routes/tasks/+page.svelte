@@ -55,13 +55,10 @@
     </div>
     <div class="view" class:active={activeView === 'progress'}>
       <ProgressView />
-<<<<<<< HEAD
-    {:else if activeView === 'workload'}
-      <WorkLoad />
-    {/if}
-=======
     </div>
->>>>>>> a10602d7aead499f2db52c1bf02bd61ec7217d31
+    <div class="view" class:active={activeView === 'workload'}>
+      <WorkLoad />
+    </div>
   </div>
 </div>
 
