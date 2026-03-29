@@ -1,4 +1,5 @@
 <script>
+  import { goto } from '$app/navigation';
   import '$lib/styles/login.css';
   import '$lib/styles/app.css';
   import logo from '$lib/assets/cursed.png';
@@ -42,7 +43,7 @@
       />
 
       <button onclick={handleLogin}>Sign In</button>
-      <button onclick={() => goto('/register')}>Create Account</button>
+      <button onclick={() => goto('/login/register')}>Create Account</button>
     </div>
 
     <!-- Dinos -->
