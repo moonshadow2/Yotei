@@ -1,5 +1,6 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from flask import Flask
 
 uri = "mongodb+srv://mbonann2:Yotei_@yoteistorage.mlase5y.mongodb.net/?appName=YoteiStorage"
 
