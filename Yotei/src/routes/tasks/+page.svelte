@@ -35,23 +35,33 @@
   .main::-webkit-scrollbar { width: 6px; }
   .main::-webkit-scrollbar-track { background: transparent; }
   .main::-webkit-scrollbar-thumb { background: rgba(0,255,135,0.2); border-radius: 99px; }
+
+  .view { display: none; }
+  .view.active { display: block; }
 </style>
 
 <div class="layout">
   <TaskSidebar bind:activeView />
 
   <div class="main">
-    {#if activeView === 'today'}
+    <div class="view" class:active={activeView === 'today'}>
       <TodayView />
-    {:else if activeView === 'weekly'}
+    </div>
+    <div class="view" class:active={activeView === 'weekly'}>
       <WeeklyView />
-    {:else if activeView === 'monthly'}
+    </div>
+    <div class="view" class:active={activeView === 'monthly'}>
       <MonthlyView />
-    {:else if activeView === 'progress'}
+    </div>
+    <div class="view" class:active={activeView === 'progress'}>
       <ProgressView />
+<<<<<<< HEAD
     {:else if activeView === 'workload'}
       <WorkLoad />
     {/if}
+=======
+    </div>
+>>>>>>> a10602d7aead499f2db52c1bf02bd61ec7217d31
   </div>
 </div>
 
