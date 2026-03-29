@@ -2,11 +2,11 @@
   import { tasks, deleteTask, toggleComplete } from '$lib/components/tasks.js';
   import AddTask from '$lib/components/task-plus-button.svelte';
 
-  let sortBy = 'dueDate';
+  let sortBy = $state('dueDate');
 
   const priorityOrder = { high: 1, medium: 2, low: 3 };
 
-  $: sortedTasks = [...$tasks].sort((a, b) => {
+  const sortedTasks = $derived.by(() => [...$tasks].sort((a, b) => {
     if (sortBy === 'dueDate') {
       const aDate = new Date(`${a.dueDate}T${a.dueTime || '00:00'}`);
       const bDate = new Date(`${b.dueDate}T${b.dueTime || '00:00'}`);
@@ -14,10 +14,10 @@
     } else {
       return priorityOrder[a.priority] - priorityOrder[b.priority];
     }
-  });
+  }));
 
-  $: completedCount = $tasks.filter(t => t.completed).length;
-  $: progressPercent = $tasks.length ? Math.round((completedCount / $tasks.length) * 100) : 0;
+  const completedCount = $derived($tasks.filter(t => t.completed).length);
+  const progressPercent = $derived($tasks.length ? Math.round((completedCount / $tasks.length) * 100) : 0);
 
   function formatDue(date, time) {
     if (!date) return 'No due date';
@@ -50,13 +50,13 @@
       <div class="btn-group shadow-sm">
         <button
           class="btn btn-sm {sortBy === 'dueDate' ? 'btn-primary' : 'btn-outline-primary'}"
-          on:click={() => (sortBy = 'dueDate')}
+          onclick={() => (sortBy = 'dueDate')}
         >
           📅 By Date
         </button>
         <button
           class="btn btn-sm {sortBy === 'priority' ? 'btn-primary' : 'btn-outline-primary'}"
-          on:click={() => (sortBy = 'priority')}
+          onclick={() => (sortBy = 'priority')}
         >
           🔥 By Priority
         </button>
@@ -109,14 +109,14 @@
               <div class="d-flex gap-2 ms-2">
                 <button
                   class="btn btn-sm {task.completed ? 'btn-outline-secondary' : 'btn-outline-success'}"
-                  on:click={() => toggleComplete(task.id)}
+                  onclick={() => toggleComplete(task.id)}
                   title={task.completed ? 'Mark incomplete' : 'Mark complete'}
                 >
                   {task.completed ? '↩' : '✓'}
                 </button>
                 <button
                   class="btn btn-sm btn-outline-danger"
-                  on:click={() => deleteTask(task.id)}
+                  onclick={() => deleteTask(task.id)}
                   title="Delete"
                 >
                   🗑
@@ -247,5 +247,3 @@
   }
 </style>
 
-<!-- Add Task Button -->
-<AddTask />
