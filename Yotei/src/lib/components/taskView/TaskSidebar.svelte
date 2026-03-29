@@ -1,20 +1,23 @@
 <script>
-  export let activeView;
+  let { activeView = $bindable('today') } = $props();
 </script>
 
 <div class="sidebar">
   <div class="sidebar-title">Yotei</div>
-  <button class="nav-btn {activeView === 'today' ? 'active' : ''}" on:click={() => activeView = 'today'}>
+  <button class="nav-btn {activeView === 'today' ? 'active' : ''}" type="button" onclick={() => activeView = 'today'}>
     Today
   </button>
-  <button class="nav-btn {activeView === 'weekly' ? 'active' : ''}" on:click={() => activeView = 'weekly'}>
+  <button class="nav-btn {activeView === 'weekly' ? 'active' : ''}" type="button" onclick={() => activeView = 'weekly'}>
     Weekly
   </button>
-  <button class="nav-btn {activeView === 'monthly' ? 'active' : ''}" on:click={() => activeView = 'monthly'}>
+  <button class="nav-btn {activeView === 'monthly' ? 'active' : ''}" type="button" onclick={() => activeView = 'monthly'}>
     Monthly
   </button>
-  <button class="nav-btn {activeView === 'progress' ? 'active' : ''}" on:click={() => activeView = 'progress'}>
+  <button class="nav-btn {activeView === 'progress' ? 'active' : ''}" type="button" onclick={() => activeView = 'progress'}>
     Progress
+  </button>
+  <button class="nav-btn {activeView === 'workload' ? 'active' : ''}" type="button" onclick={() => activeView = 'workload'}>
+    Workload
   </button>
 </div>
 
@@ -36,6 +39,7 @@
     letter-spacing: 2px;
     background: linear-gradient(90deg, #00ff87, #60efff);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 2rem;
     text-align: center;

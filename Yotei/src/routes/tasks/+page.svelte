@@ -4,9 +4,10 @@
   import WeeklyView from '$lib/components/taskView/WeeklyView.svelte';
   import MonthlyView from '$lib/components/taskView/MonthlyView.svelte';
   import ProgressView from '$lib/components/taskView/ProgressView.svelte';
+  import WorkLoad from '$lib/components/taskView/WorkLoad.svelte';
   import AddTask from '$lib/components/task-plus-button.svelte';
 
-  let activeView = 'today';
+  let activeView = $state('today');
 </script>
 
 <svelte:head>
@@ -48,6 +49,8 @@
       <MonthlyView />
     {:else if activeView === 'progress'}
       <ProgressView />
+    {:else if activeView === 'workload'}
+      <WorkLoad />
     {/if}
   </div>
 </div>

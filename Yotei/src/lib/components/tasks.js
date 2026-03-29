@@ -1,4 +1,20 @@
 import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+
+const TASKS_STORAGE_KEY = 'yotei.tasks.v1';
+
+function loadPersistedTasks() {
+  if (!browser) return [];
+
+  try {
+    const raw = localStorage.getItem(TASKS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 function createTask({ 
   title = '', 
@@ -59,7 +75,13 @@ function createTask({
   };
 }
 
-export const tasks = writable([]);
+export const tasks = writable(loadPersistedTasks());
+
+if (browser) {
+  tasks.subscribe((list) => {
+    localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(list));
+  });
+}
 
 export function addTask(taskData) {
   const task = createTask(taskData);
